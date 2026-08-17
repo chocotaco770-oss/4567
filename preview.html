@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HOSPITAL MANAGEMENT SYSTEM USING JAVA — Project Portal</title>
+<style>
+  :root{
+    --teal:#0f766e; --teal-dark:#0b4f4a; --teal-light:#14b8a6;
+    --bg:#f1f5f9; --panel:#ffffff; --ink:#0f172a; --muted:#64748b;
+    --line:#e2e8f0; --green:#16a34a; --amber:#d97706; --red:#dc2626; --blue:#2563eb;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:"Segoe UI",system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--ink);line-height:1.5}
+  .wrap{max-width:1080px;margin:0 auto;padding:24px 20px 60px}
+  /* header */
+  header{background:linear-gradient(135deg,var(--teal-dark),var(--teal));color:#fff;border-radius:14px;padding:26px 28px;margin-bottom:22px;display:flex;flex-wrap:wrap;gap:18px;align-items:center;justify-content:space-between}
+  header h1{font-size:22px;letter-spacing:.4px}
+  header p{color:#cffaf5;font-size:13px;margin-top:4px}
+  .badges{display:flex;gap:8px;flex-wrap:wrap}
+  .badge{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.3);padding:4px 10px;border-radius:999px;font-size:12px}
+  .live{background:#16a34a;color:#fff;font-weight:600}
+  /* cards */
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px;margin-bottom:22px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px 20px;box-shadow:0 1px 2px rgba(15,23,42,.05)}
+  .card h2{font-size:14px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);margin-bottom:12px}
+  .card h3{font-size:15px;margin-bottom:8px}
+  ul.clean{list-style:none}
+  ul.clean li{padding:5px 0 5px 20px;position:relative;font-size:13.5px}
+  ul.clean li:before{content:"▸";position:absolute;left:2px;color:var(--teal-light)}
+  .tag{display:inline-block;padding:1px 8px;border-radius:6px;font-size:11.5px;font-weight:600;margin-right:6px}
+  .t-done{background:#dcfce7;color:var(--green)} .t-wait{background:#fef3c7;color:var(--amber)}
+  /* progress */
+  .steps{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px}
+  .step{flex:1 1 90px;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px;text-align:center;font-size:12px}
+  .step .n{display:block;font-weight:700;color:var(--teal);font-size:15px;margin-bottom:2px}
+  .step.done{border-color:#86efac;background:#f0fdf4} .step.done .n{color:var(--green)}
+  .step.now{border-color:var(--teal-light);background:#f0fdfa;box-shadow:0 0 0 3px rgba(20,184,166,.18)} .step.now .n{color:var(--teal)}
+  /* architecture */
+  .layers{display:flex;flex-direction:column;gap:6px;margin-top:6px}
+  .layer{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px 14px;display:flex;align-items:center;gap:10px;font-size:13px}
+  .layer .lbl{min-width:96px;font-weight:700;color:#fff;background:var(--teal);border-radius:6px;padding:3px 8px;text-align:center;font-size:11.5px}
+  .layer:nth-child(1) .lbl{background:var(--teal)} .layer:nth-child(2) .lbl{background:#0d9488}
+  .layer:nth-child(3) .lbl{background:#0f766e} .layer:nth-child(4) .lbl{background:#115e59}
+  .layer:nth-child(5) .lbl{background:#134e4a}
+  .arrow{text-align:center;color:var(--muted);font-size:12px}
+  .mono{font-family:Consolas,Menlo,monospace;font-size:12.5px;background:#0f172a;color:#a7f3d0;border-radius:8px;padding:12px 14px;overflow-x:auto;white-space:pre}
+  /* credentials */
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  th,td{border:1px solid var(--line);padding:8px 10px;text-align:left}
+  th{background:#f8fafc;color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.4px}
+  td code{background:#f1f5f9;padding:1px 6px;border-radius:5px;font-family:Consolas,monospace;font-size:12px}
+  /* mockup */
+  .mock-head{display:flex;justify-content:space-between;align-items:center;background:var(--teal-dark);color:#fff;padding:10px 16px;border-radius:10px 10px 0 0;font-size:13px}
+  .mock-head .u{background:rgba(255,255,255,.16);padding:3px 10px;border-radius:999px;font-size:11.5px}
+  .mock-body{display:flex;border:1px solid var(--line);border-top:none;border-radius:0 0 10px 10px;background:var(--panel);min-height:280px}
+  .mock-side{width:150px;background:#0b4f4a;color:#cffaf5;padding:12px 10px;border-radius:0 0 0 10px;font-size:12px}
+  .mock-side div{padding:6px 10px;border-radius:6px;margin-bottom:3px}
+  .mock-side .on{background:var(--teal-light);color:#083344;font-weight:700}
+  .mock-content{flex:1;padding:16px;display:grid;grid-template-columns:repeat(3,1fr);gap:10px;align-content:start}
+  .stat{background:#f8fafc;border:1px solid var(--line);border-radius:8px;padding:10px}
+  .stat .v{font-size:20px;font-weight:700;color:var(--teal)}
+  .stat .k{font-size:11px;color:var(--muted)}
+  .note{font-size:12px;color:var(--muted);border-left:3px solid var(--amber);background:#fffbeb;padding:8px 12px;border-radius:0 8px 8px 0;margin-bottom:16px}
+  .screen-tabs{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+  .screen-tabs button{border:1px solid var(--line);background:var(--panel);padding:7px 14px;border-radius:8px;cursor:pointer;font-size:12.5px;font-weight:600;color:var(--muted)}
+  .screen-tabs button.on{background:var(--teal);color:#fff;border-color:var(--teal)}
+  .hidden{display:none}
+  .foot{color:var(--muted);font-size:12px;text-align:center;margin-top:30px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div>
+      <h1>🏥 HOSPITAL MANAGEMENT SYSTEM USING JAVA</h1>
+      <p>SmartCare OOP Sessional (CCE 122) → Enhanced desktop implementation · Java + JavaFX + FXML + CSS + SQLite + JDBC + Maven</p>
+    </div>
+    <div class="badges">
+      <span class="badge live">● LIVE PREVIEW</span>
+      <span class="badge">Design portal — the real app is a JavaFX desktop application</span>
+    </div>
+  </header>
+
+  <div class="note">
+    ⚠️ This page is a <b>project portal and UI design mockup</b> served from the workspace. The actual deliverable is a
+    <b>JavaFX desktop application</b> (FXML + CSS) that cannot run inside a web preview — this portal documents the plan, tracks build progress,
+    and shows the intended screen designs so you can watch the project come together live.
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <h2>Build Progress (11 steps)</h2>
+      <div class="steps">
+        <div class="step done"><span class="n">1</span>Requirement Analysis</div>
+        <div class="step done"><span class="n">2</span>Final Architecture</div>
+        <div class="step done"><span class="n">3</span>Maven + DB</div>
+        <div class="step done"><span class="n">4</span>Models</div>
+        <div class="step done"><span class="n">5</span>Repositories</div>
+        <div class="step done"><span class="n">6</span>Services</div>
+        <div class="step done"><span class="n">7</span>Exceptions/Utils</div>
+        <div class="step now"><span class="n">8</span>JavaFX UI</div>
+        <div class="step"><span class="n">9</span>CSS</div>
+        <div class="step"><span class="n">10</span>Testing</div>
+        <div class="step"><span class="n">11</span>Audit + Docs</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Tech Stack</h2>
+      <ul class="clean">
+        <li>Java <b>21 LTS</b> · Object-Oriented Programming</li>
+        <li>JavaFX <b>21.0.4</b> (Controls + FXML)</li>
+        <li>CSS design system · native charts</li>
+        <li>SQLite <b>3.46.1.3</b> via JDBC (PreparedStatement)</li>
+        <li>Maven build · JUnit 5 tests</li>
+        <li>Layered: Controller → Service → Repository → Database</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2>Demo Credentials (seeded on first run)</h2>
+      <table>
+        <tr><th>Role</th><th>Username</th><th>Password</th></tr>
+        <tr><td>Admin</td><td><code>admin</code></td><td><code>admin123</code></td></tr>
+        <tr><td>Doctor</td><td><code>doctor@hospital.com</code></td><td><code>doctor123</code></td></tr>
+        <tr><td>Patient</td><td><code>patient@hospital.com</code></td><td><code>patient123</code></td></tr>
+      </table>
+      <p style="font-size:11.5px;color:var(--muted);margin-top:8px">Passwords stored as PBKDF2 hashes — never plaintext.</p>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <h2>Major Modules</h2>
+      <ul class="clean">
+        <li>Patient registration &amp; management (CRUD + search)</li>
+        <li>Doctor management · specialization · fee · availability</li>
+        <li>Appointments — booking, update, cancel; <b>double-booking prevention</b></li>
+        <li>Prescriptions · Medical records (chronological history)</li>
+        <li>Billing (auto-calculated) · Payments (interface-driven)</li>
+        <li>Room allocation · Ambulance booking · Reports · Backup/Restore</li>
+        <li>Role-based login: Admin / Doctor / Patient dashboards</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2>Layered Architecture</h2>
+      <div class="layers">
+        <div class="layer"><span class="lbl">FXML + CSS</span> Views — 16 screens</div>
+        <div class="arrow">↓</div>
+        <div class="layer"><span class="lbl">Controller</span> Input, alerts, navigation — no SQL, no business rules</div>
+        <div class="arrow">↓</div>
+        <div class="layer"><span class="lbl">Service</span> Business rules, validation, transactions, custom exceptions</div>
+        <div class="arrow">↓</div>
+        <div class="layer"><span class="lbl">Repository</span> JDBC + PreparedStatement, result mapping (11 DAOs)</div>
+        <div class="arrow">↓</div>
+        <div class="layer"><span class="lbl">Database</span> SQLite · data/hospital.db · foreign keys · backup/restore</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>OOP Concepts</h2>
+      <ul class="clean">
+        <li><b>Inheritance</b> — <code>Person</code> → Patient, Doctor, Admin</li>
+        <li><b>Abstraction</b> — abstract <code>Person</code> with abstract <code>displayInformation()</code></li>
+        <li><b>Polymorphism</b> — method overriding + <code>PaymentService</code> / <code>ReportGenerator</code> interfaces</li>
+        <li><b>Encapsulation</b> — private fields, getters/setters, guarded state changes</li>
+        <li><b>Association</b> — Patient ↔ Appointment ↔ Doctor</li>
+        <li><b>Aggregation</b> — Hospital holds Patients/Doctors/Rooms/Ambulances</li>
+        <li><b>Composition</b> — MedicalRecord owns Prescription (cascade delete)</li>
+        <li><b>Overloading</b> — <code>searchPatient(name)</code> / <code>searchPatient(name, phone)</code></li>
+        <li><b>Exceptions</b> — 10 custom exceptions → user-friendly alerts</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom:22px">
+    <h2>UI Design Preview (JavaFX screens)</h2>
+    <div class="screen-tabs">
+      <button class="on" data-s="login">Login</button>
+      <button data-s="admin">Admin Dashboard</button>
+      <button data-s="patient">Patient Dashboard</button>
+      <button data-s="appt">Appointments</button>
+      <button data-s="billing">Billing</button>
+    </div>
+
+    <!-- LOGIN -->
+    <div id="s-login" class="screen">
+      <div style="max-width:340px;margin:0 auto;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:22px;box-shadow:0 8px 24px rgba(15,23,42,.08)">
+        <div style="text-align:center;margin-bottom:16px">
+          <div style="font-size:30px">🏥</div>
+          <div style="font-weight:700;font-size:15px;color:var(--teal-dark)">HOSPITAL MANAGEMENT SYSTEM</div>
+          <div style="font-size:11.5px;color:var(--muted)">Sign in to continue</div>
+        </div>
+        <div style="font-size:12px;color:var(--muted);margin-bottom:4px">Username / Email</div>
+        <div style="border:1px solid var(--line);border-radius:8px;padding:9px 12px;font-size:13px;margin-bottom:10px;color:#94a3b8">admin</div>
+        <div style="font-size:12px;color:var(--muted);margin-bottom:4px">Password</div>
+        <div style="border:1px solid var(--line);border-radius:8px;padding:9px 12px;font-size:13px;margin-bottom:14px;color:#94a3b8">••••••••</div>
+        <div style="background:var(--teal);color:#fff;text-align:center;border-radius:8px;padding:10px;font-size:13px;font-weight:600">Login</div>
+        <div style="text-align:center;font-size:11.5px;color:var(--muted);margin-top:10px">New here? Register as a patient</div>
+      </div>
+    </div>
+
+    <!-- ADMIN DASHBOARD -->
+    <div id="s-admin" class="screen hidden">
+      <div class="mock-head">
+        <span>🏥 HOSPITAL MANAGEMENT SYSTEM</span>
+        <span class="u">Admin · admin 👤 | Logout</span>
+      </div>
+      <div class="mock-body">
+        <div class="mock-side">
+          <div class="on">Dashboard</div><div>Patients</div><div>Doctors</div><div>Appointments</div><div>Prescriptions</div><div>Medical Records</div><div>Billing</div><div>Payments</div><div>Rooms</div><div>Ambulances</div><div>Reports</div><div>Settings</div>
+        </div>
+        <div class="mock-content">
+          <div class="stat"><div class="v">248</div><div class="k">Total Patients</div></div>
+          <div class="stat"><div class="v">32</div><div class="k">Total Doctors</div></div>
+          <div class="stat"><div class="v">17</div><div class="k">Today's Appointments</div></div>
+          <div class="stat"><div class="v">9</div><div class="k">Available Rooms</div></div>
+          <div class="stat"><div class="v">2</div><div class="k">Available Ambulances</div></div>
+          <div class="stat"><div class="v">6</div><div class="k">Pending Payments</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PATIENT DASHBOARD -->
+    <div id="s-patient" class="screen hidden">
+      <div class="mock-head">
+        <span>🏥 HOSPITAL MANAGEMENT SYSTEM</span>
+        <span class="u">Patient · patient@hospital.com 👤 | Logout</span>
+      </div>
+      <div class="mock-body">
+        <div class="mock-side">
+          <div class="on">Dashboard</div><div>Find Doctors</div><div>Book Appointment</div><div>My Appointments</div><div>My Prescriptions</div><div>My Medical Records</div><div>My Bills</div><div>Make Payment</div><div>Ambulance</div><div>My Room</div><div>Profile</div>
+        </div>
+        <div class="mock-content">
+          <div class="stat"><div class="v">3</div><div class="k">Upcoming Appointments</div></div>
+          <div class="stat"><div class="v">5</div><div class="k">Prescriptions</div></div>
+          <div class="stat"><div class="v">৳2,400</div><div class="k">Outstanding Bill</div></div>
+          <div class="stat"><div class="v">101</div><div class="k">Allocated Room (Private)</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- APPOINTMENTS -->
+    <div id="s-appt" class="screen hidden">
+      <div class="mock-head">
+        <span>Appointment Management</span>
+        <span class="u">Search: <b>🔍</b> · Add · Edit · Cancel · Refresh</span>
+      </div>
+      <table>
+        <tr><th>ID</th><th>Patient</th><th>Doctor</th><th>Date</th><th>Time</th><th>Status</th></tr>
+        <tr><td>1</td><td>Patient Demo</td><td>Dr. Rahman</td><td>2026-08-18</td><td>10:30</td><td><span class="tag t-done">Booked</span></td></tr>
+        <tr><td>2</td><td>Patient Demo</td><td>Dr. Akter</td><td>2026-08-19</td><td>14:00</td><td><span class="tag t-wait">Booked</span></td></tr>
+        <tr><td>3</td><td>Karim Uddin</td><td>Dr. Rahman</td><td>2026-08-18</td><td>11:00</td><td><span class="tag t-done">Completed</span></td></tr>
+      </table>
+      <div style="font-size:12px;color:var(--muted);margin-top:10px">✔ Conflict prevention: a doctor or patient cannot hold two active appointments at the same date + time.</div>
+    </div>
+
+    <!-- BILLING -->
+    <div id="s-billing" class="screen hidden">
+      <div class="mock-head"><span>Billing — Generate Bill</span><span class="u">Patient: Patient Demo</span></div>
+      <div style="padding:14px;max-width:420px">
+        <table>
+          <tr><th>Item</th><th>Amount</th></tr>
+          <tr><td>Consultation fee</td><td>৳800</td></tr>
+          <tr><td>Room charge (2 days × ৳1,500)</td><td>৳3,000</td></tr>
+          <tr><td>Medicine cost</td><td>৳450</td></tr>
+          <tr><td>Ambulance charge</td><td>৳0</td></tr>
+          <tr><td>Other charges</td><td>৳200</td></tr>
+          <tr style="font-weight:700;background:#f0fdfa"><td>Total (auto-calculated)</td><td>৳4,450</td></tr>
+        </table>
+        <div style="display:flex;gap:8px;margin-top:12px">
+          <div style="background:var(--teal);color:#fff;flex:1;text-align:center;border-radius:8px;padding:9px;font-size:13px;font-weight:600">Generate Bill</div>
+          <div style="border:1px solid var(--line);flex:1;text-align:center;border-radius:8px;padding:9px;font-size:13px;color:var(--muted)">Reset</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Workspace Files</h2>
+    <div class="mono">HospitalManagementSystem/
+├── REQUIREMENT_ANALYSIS.md       ← Step 1 ✅
+├── ARCHITECTURE.md               ← Step 2 ✅
+├── preview.html                  ← this portal
+├── pom.xml                       ← Step 3 ✅
+├── src/main/java/com/hospitalmanagement/
+│   ├── Main.java                 ← Step 3 ✅
+│   ├── database/DatabaseManager  ← Step 3 ✅ (schema + FK + transactions)
+│   ├── database/SeedData         ← Step 3 ✅ (demo data)
+│   ├── util/PasswordUtil         ← Step 3 ✅ (PBKDF2)
+│   ├── util/Validator            ← Step 3 ✅
+│   ├── exception/ (10 classes)   ← Step 3 ✅
+│   ├── model/ (13 classes)       ← Step 4 ✅
+│   │     Person → Patient/Doctor/Admin, User, Appointment,
+│   │     Prescription, MedicalRecord, Bill, Payment, Room,
+│   │     Ambulance, Hospital (+ nested enums)
+│   ├── repository/ (11 classes)  ← Step 5 ✅ JDBC + PreparedStatement
+│   │     User, Patient, Doctor, Admin, Appointment (conflict queries),
+│   │     Prescription, MedicalRecord, Bill, Payment, Room, Ambulance
+│   ├── service/ (13 classes)     ← Step 6 ✅ business rules + transactions
+│   │     Authentication, Hospital, Patient, Doctor, Appointment (conflicts),
+│   │     Prescription, MedicalRecord, Billing, Room, Ambulance,
+│   │     PaymentService(interface) + PaymentServiceImpl, ReportService
+│   ├── report/ (10 classes)      ← Step 6 ✅ polymorphic ReportGenerator + 8 reports
+│   ├── exception/ (10 classes)   ← Step 3 ✅
+│   ├── util/                     ← Step 7 ✅ Validator, PasswordUtil, SessionManager,
+│   │                                AlertUtil, NavigationUtil, TimeSlotUtil
+│   └── controller/               ← Step 8 ✅ COMPLETE (17 screens)
+│        ✅ Login, PatientRegistration, ChangePassword
+│        ✅ BaseDashboard + Admin/Doctor/Patient dashboards
+│        ✅ PatientManagement · DoctorManagement · AppointmentManagement
+│        ✅ Prescription · MedicalRecord · Billing (auto-total preview) · Payment
+│        ✅ Room (allocate/release) · Ambulance (book/release) ·
+│           Reports (polymorphic generators + export) · Settings
+│           (hospital info, password, backup/restore)
+├── src/main/resources/
+│   ├── database/schema.sql       ← Step 3 ✅ (12 tables)
+│   ├── css/application.css       ← Step 9 ✅ polished design system
+│   │                                (text areas, disabled states, combo/date pickers,
+│   │                                scrollbars, report area, settings, totals)
+│   ├── fxml/ (17 of 17)          ← Step 8 ✅ ALL screens role-aware
+│   │                                (admin CRUD, doctor-scoped, patient self-service)
+└── src/test/  (50 tests green ✅) ← Step 10 ✅ expanded coverage:
+    Model 9 · Repository 9 · Service 18 · DatabaseManager 5 ·
+    Util 7 · UI 2 (FXML load + off-screen render → visual-pass.html)
+
+Docs:  README.md (setup, demo credentials, tech stack) ✅
+       REQUIREMENT_CHECKLIST.md (proposal → implementation, all ✅) ✅
+       VIVA.md (OOP explanations + likely viva questions) ✅
+       ARCHITECTURE.md · REQUIREMENT_ANALYSIS.md (Steps 1–2) ✅
+
+📦 DISTRIBUTABLE WINDOWS APP ✅ (packaged + smoke-tested)
+  target/dist/HospitalManagementSystem/HospitalManagementSystem.exe
+  → double-clickable, bundled JRE + JavaFX (no install needed)
+  → custom icon (src/main/resources/icons/app.ico + app.png)
+    embedded in the EXE + used as the window/taskbar icon (verified
+    by extracting the icon back out of the exe)
+  → version metadata: name, 1.0.0, vendor, description, copyright
+  → first launch seeds data/hospital.db + demo credentials (verified)
+  → zip: target/dist/HospitalManagementSystem.zip (~45 MB)
+  → MSI INSTALLER: target/dist-msi/HospitalManagementSystem-1.0.0.msi (~46 MB)
+    installs to Program Files, Start Menu + desktop shortcut (WiX 3.14,
+    verified: 225 files, exe+jars inside, 2 shortcuts, product metadata)
+  → rebuild anytime with: package-windows.cmd
+
+Verified: mvn compile ✅ · mvn test (50/50) ✅ · javafx:run smoke ✅ (clean launch)
+Audit (Step 11): 20/20 sidebar links resolve · 17/17 controllers wired ·
+role gates verified per screen · login → role routing → logout confirmed ·
+all 17 screens rendered + visually reviewed</div>
+  </div>
+
+  <div class="foot">HOSPITAL MANAGEMENT SYSTEM USING JAVA · Enhanced implementation of the SmartCare proposal (OOP Sessional, CCE 122) · Preview hosted from this thread's workspace</div>
+</div>
+
+<script>
+  document.querySelectorAll('.screen-tabs button').forEach(function(b){
+    b.addEventListener('click', function(){
+      document.querySelectorAll('.screen-tabs button').forEach(function(x){x.classList.remove('on')});
+      b.classList.add('on');
+      document.querySelectorAll('.screen').forEach(function(s){s.classList.add('hidden')});
+      document.getElementById('s-'+b.dataset.s).classList.remove('hidden');
+    });
+  });
+</script>
+</body>
+</html>
